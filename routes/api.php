@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\TransactionController;
 
@@ -20,5 +21,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('categories', CategoryController::class);
-Route::apiResource('transactions', TransactionController::class);
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('transactions', TransactionController::class);
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
+});
+
+Route::post('/auth/login', [AuthController::class, 'login']);
+Route::post('/auth/register', [AuthController::class, 'register']);
