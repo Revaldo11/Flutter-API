@@ -28,7 +28,8 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        return new CategoryResource(Category::create($request->validated()));
+        $category = auth()->user()->categories()->create($request->validated());
+        return new CategoryResource($category);
     }
 
     /**
@@ -40,7 +41,7 @@ class CategoryController extends Controller
     public function show($id)
     {
         $category = Category::find($id);
-        if(!$category){
+        if (!$category) {
             abort(404, 'Category not found');
         }
         return new CategoryResource($category);
